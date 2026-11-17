@@ -16,7 +16,7 @@ class Course extends Model
     // Un curso pertenece a una academia
     public function academy(): BelongsTo
     {
-        return $this->belongsTo(Academy::class);
+        return $this->belongsTo(Academy::class); 
     }
 
     // Un curso tiene muchos alumnos (N:N)
