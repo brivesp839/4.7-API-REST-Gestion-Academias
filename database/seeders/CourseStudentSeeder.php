@@ -6,6 +6,7 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\Student;
 use App\Models\Course;
+use App\Models\Academy;
 
 class CourseStudentSeeder extends Seeder
 {
@@ -22,5 +23,15 @@ class CourseStudentSeeder extends Seeder
 
         $php->students()->attach([$ana->id, $luis->id]);
         $ingles->students()->attach($ana->id);
+
+        $norte = Academy::where('name', 'Academia Norte')->first();
+
+        $norte->courses()->create([
+            'name' => 'Preparación de oposiciones',
+            'description' => 'Curso intensivo para oposiciones administrativas',
+            'start_date' => '2026-09-15',
+            'end_date' => '2027-06-30',
+            'capacity' => 30,
+        ]);
     }
 }
