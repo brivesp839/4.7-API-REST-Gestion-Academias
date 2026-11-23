@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Academy;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class AcademyController extends Controller
 {
@@ -11,13 +12,10 @@ class AcademyController extends Controller
      * Display a listing of the resource.
      */
     //Lista todas las academias
-    public function index()
+    public function index(Request $request)
     {
-        //Obtengo las academias
-        $academies = Academy::all();
-
         //Devuelvo la respuesta en formato JSON
-        return response()->json($academies);
+        return response()->json($request->user()->academies);
     }
 
     //Crea una nueva academia 
@@ -34,7 +32,7 @@ class AcademyController extends Controller
         ]);
 
         //Creo la academia en la base de datos
-        $academy = Academy::create($data);
+        $academy = $request->user()->academies()->create($data);
 
         //Devuelvo la academia creada con el codigo HTTP 201
         return response()->json($academy, 201);
@@ -47,6 +45,7 @@ class AcademyController extends Controller
     public function show(Academy $academy)
     {
         //Comprobar que sólo la persona autenticada pueda ver la academia
+        Gate::authorize('view', $academy); //llama a la policy: false devuelve 403
 
         /*Gracias al route model Binding que prepare en --model=Academy 
         al crear el controlador, Laravel ya busca la academia por mí y la entrega
