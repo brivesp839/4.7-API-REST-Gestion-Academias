@@ -54,19 +54,39 @@ class AcademyController extends Controller
         return response()->json($academy);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
+    //Modifica una academia
     public function update(Request $request, Academy $academy)
     {
-        //
+        //Verifico que el que actualiza es el dueño del proyecto usando regla de policy
+        Gate::authorize('update', $academy);
+        
+        //Valido los campos únicamente los que sean cambiados usando sometimes
+        $data = $request->validate([
+            'name' => 'sometimes|required|string|max:255',
+            'description' => 'nullable|string',
+            'address' => 'sometimes|required|string|max:255',
+            'phone' => 'sometimes|required|string|max:20',
+            'email' => 'sometimes|required|email|max:255',
+        ]);
+
+        //Realizo la consulta a la BD
+        $academy->update($data);
+
+        //Devuelvo los datos actualizados de la academia
+        //No se incluye user_id porque la academia no cambia de dueño
+        return response()->json($academy);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
+    //Borra una academia
     public function destroy(Academy $academy)
     {
-        //
+        //Verifico que el que borra es el dueño del proyecto usando regla de policy
+        Gate::authorize('delete', $academy);
+
+        //Realizo la consulta de borrado
+        $academy->delete();
+
+        //Devuelvo la respuesta
+        return response()->json(null, 204);
     }
 }
