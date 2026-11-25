@@ -12,6 +12,7 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 Route::post('/login', [AuthController::class, 'login']);
+Route::post('/register', [AuthController::class, 'register']);
 
 //Meto todas las rutas con un middleware y sactum para protegerlas
 Route::middleware('auth:sanctum')->group(function () {

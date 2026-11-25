@@ -27,11 +27,40 @@ class AuthController extends Controller
         return response()->json(['token' => $token]);
     }
 
+    //Ruta register
+    public function register(Request $request)
+    {
+        //Valido los datos antes de crear el usuario 
+        $data = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255|unique:users,email',
+            'password' => 'required|string|min:8|confirmed',
+        ]);
+
+        //Creo el usuario 
+        $user = User::create([
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'password' => Hash::make($data['password']),
+        ]);
+
+        //Genero el token 
+        $token = $user->createToken('api-token')->plainTextToken;
+
+        //Mando respuesta en formato json
+        return response()->json([
+            'user' => $user,
+            'token' => $token,
+        ], 201);
+    }
+
     //borra el token que se usó en la petición, y deja de valer.
     public function logout(Request $request)
     {
+        //Destruyo el token del usuario
         $request->user()->currentAccessToken()->delete();
 
+        //Respondo con un mensaje de confirmación formato json
         return response()->json(['message' => 'Sesión cerrada']);
     }
 }
