@@ -12,16 +12,10 @@ class CourseController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index()
     {
-        //Lista con los ids de las academias del usuario autenticado    
-        $academyIds = $request->user()->academies()->pluck('id');
-
-        //Obtengo los cursos de dichas academias
-        $courses = Course::whereIn('academy_id', $academyIds)->get();
-
         //devuelvo la respuesta del servidor en formato json
-        return response()->json($courses);
+        return response()->json(Course::all());
     }
 
     /**
@@ -57,9 +51,6 @@ class CourseController extends Controller
      */
     public function show(Course $course)
     {
-        //Verifico que el usuario este autorizado a ver el curso
-        Gate::authorize('view', $course);
-
         //Devuelvo respuesta     
         return response()->json($course);
     }

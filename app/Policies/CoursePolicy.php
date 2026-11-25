@@ -26,7 +26,7 @@ class CoursePolicy
      */
     public function view(User $user, Course $course): bool
     {
-        return $user->id === $course->academy?->user_id;
+        return false;
     }
 
     /**

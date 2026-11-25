@@ -20,7 +20,7 @@ class AcademyPolicy
     //Permite al usuario ver sólo sus academias
     public function view(User $user, Academy $academy): bool
     {
-        return $user->id === $academy->user_id;
+        return false;
     }
 
     

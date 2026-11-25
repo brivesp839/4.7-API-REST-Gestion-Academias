@@ -12,10 +12,10 @@ class AcademyController extends Controller
      * Display a listing of the resource.
      */
     //Lista todas las academias
-    public function index(Request $request)
+    public function index()
     {
         //Devuelvo la respuesta en formato JSON
-        return response()->json($request->user()->academies);
+        return response()->json(Academy::all()); //el usuario podrá ver todas las academias existentes
     }
 
     //Crea una nueva academia 
@@ -44,9 +44,6 @@ class AcademyController extends Controller
     //Devuelve solo 1 academia
     public function show(Academy $academy)
     {
-        //Comprobar que sólo la persona autenticada pueda ver la academia
-        Gate::authorize('view', $academy); //llama a la policy: false devuelve 403
-
         /*Gracias al route model Binding que prepare en --model=Academy 
         al crear el controlador, Laravel ya busca la academia por mí y la entrega
         en $academy
