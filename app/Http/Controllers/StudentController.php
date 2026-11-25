@@ -14,7 +14,7 @@ class StudentController extends Controller
     public function index(Request $request)
     {
         //Devuelvo la respuesta en formato JSON
-        return response()->json($request->user()->students);
+        return response()->json(Student::all());
 
     }
 
