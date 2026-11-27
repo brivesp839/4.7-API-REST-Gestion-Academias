@@ -86,4 +86,10 @@ class AcademyController extends Controller
         //Devuelvo la respuesta
         return response()->json(null, 204);
     }
+
+    //Ruta No-REST para ver los cursos de una academia: relación (N:N)
+    public function courses(Academy $academy) {
+        //Devuelvo los cursos de la academia en formato json
+        return response()->json($academy->courses);
+    }
 }

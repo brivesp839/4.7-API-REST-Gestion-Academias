@@ -93,4 +93,9 @@ class CourseController extends Controller
         //devuelvo respuesta
         return response()->json(null, 204);
     }
+
+    //Ruta No-Rest de la relación N:N con estudiantes
+    public function students(Course $course) {
+        return response()->json($course->students);
+    }
 }
