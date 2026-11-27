@@ -24,6 +24,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
     //Estudiantes de un curso
     Route::get('/courses/{course}/students', [CourseController::class, 'students']);
+    //Rutas para matricular y desmatricular estudiantes
+    Route::post('/courses/{course}/students', [CourseController::class, 'enroll']);
+    Route::delete('/courses/{course}/students/{student}', [CourseController::class, 'unenroll']);
 
     //Rutas de las diferentes entidades de mi proyecto
     Route::apiResource('academies', AcademyController::class); //Me genera las 5 de academias

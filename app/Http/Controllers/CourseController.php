@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Course;
 use Illuminate\Http\Request;
 use App\Models\Academy;
+use App\Models\Student;
 use Illuminate\Support\Facades\Gate;
 
 class CourseController extends Controller
@@ -95,7 +96,54 @@ class CourseController extends Controller
     }
 
     //Ruta No-Rest de la relación N:N con estudiantes
-    public function students(Course $course) {
+    public function students(Course $course)
+    {
         return response()->json($course->students);
+    }
+
+    //Matricular a un estudiante
+    public function enroll(Request $request, Course $course)
+    {
+        //Sólo el propietario puede matricular
+        Gate::authorize('update', $course);
+
+        //Valido el id del alumno a matricular
+        $data = $request->validate([
+            'student_id' => 'required|exists:students,id',
+        ]);
+
+        //Si ya existe el id significa que el alumno ya está matriculado
+        if ($course->students->contains($data['student_id'])) {
+            return response()->json(['message' => 'El alumno ya está matriculado en este curso'], 422);
+        }
+
+        //Lanzo error si el curso ya está completo
+        if ($course->students()->count() >= $course->capacity) {
+            return response()->json(['message' => 'El curso está completo'], 422);
+        }
+
+        //Si todo es correcto matriculo al estudiante
+        $course->students()->attach($data['student_id']);
+
+        //Devuelvo la respuesta HTTP 201 y json con mensaje de confirmación
+        return response()->json(['message' => 'Alumno matriculado correctamente'], 201);
+    }
+
+    //Desmatricular a un estudiante
+    public function unenroll(Course $course, Student $student)
+    {
+        //Sólo el propietario puede actualizar
+        Gate::authorize('update', $course);
+
+        //Si no se encuentra el id, significa que el alumno no está matriculado
+        if (! $course->students->contains($student->id)) {
+            return response()->json(['message' => 'El alumno no está matriculado en este curso'], 404);
+        }
+        
+        //Se quita al alumno del curso
+        $course->students()->detach($student->id);
+
+        //Devuelvo json con confirmación de borrado respuesta HTTP
+        return response()->json(null, 204);
     }
 }
